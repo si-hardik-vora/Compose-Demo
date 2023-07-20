@@ -5,6 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -20,8 +24,24 @@ import com.example.composedemo.R
 
 @Preview(showBackground = true)
 @Composable
-fun Preview() {
-    BlogCategory(imgId = R.drawable.ic_heart, name = "Vora Hardik", subTitle = "Android Developer")
+fun PreviewItem() {
+
+    // II WILL RENDER ALL THE ITEMS.
+   /* Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        getCategoryList().map {
+            BlogCategory(imgId = it.imgId, name = it.name, subTitle = it.description)
+        }
+    }*/
+
+    LazyColumn(content = {
+      items(getCategoryList()){
+          BlogCategory(imgId = it.imgId, name = it.name, subTitle = it.description)
+      }
+    })
+
+
+
+
 }
 
 
@@ -51,7 +71,6 @@ fun BlogCategory(imgId: Int, name: String, subTitle: String) {
             ItemDescription(name, subTitle, Modifier.weight(.8f))
 
         }
-
     }
 }
 
@@ -69,4 +88,40 @@ private fun ItemDescription(name: String, subTitle: String, modifier: Modifier) 
             fontWeight = FontWeight.Thin
         )
     }
+}
+
+
+data class Category (val imgId: Int, val name: String, val description: String)
+
+fun getCategoryList(): MutableList<Category> {
+    val list = mutableListOf<Category>()
+
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+    list.add(Category(R.drawable.ic_heart, "Hardik", "Android developer"))
+
+    return list
 }
