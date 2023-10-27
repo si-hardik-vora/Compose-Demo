@@ -4,6 +4,7 @@ package com.example.composedemo
 
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewTreeObserver
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -21,14 +22,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +40,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -44,11 +50,43 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 //          PreviewItem()
-            CoroutineScopeComposable()
-
+            App()
         }
     }
 }
+
+/* TODO
+*   When we need to do some clean-up in composable then we're using Disposable Effect*/
+
+@Composable
+fun App() {
+    DisposableEffectHandler()
+    TextField(value = "", onValueChange = {})
+}
+@Composable
+fun DisposableEffectHandler() {
+
+    var view = LocalView.current
+
+   DisposableEffect(key1 = Unit){
+
+       var listener = ViewTreeObserver.OnGlobalLayoutListener {
+           val insets = ViewCompat.getRootWindowInsets(view)
+           val isVisible = insets?.isVisible(WindowInsetsCompat.Type.ime())
+           Log.e("TAG", "DisposableEffectHandler: $isVisible" )
+       }
+
+       view.viewTreeObserver.addOnGlobalLayoutListener (listener)
+
+        onDispose {
+            view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
+    }
+
+
+
+}
+
 
 @Preview
 @Composable
@@ -95,6 +133,33 @@ fun CoroutineScopeComposable() {
     }
 }
 
+@Composable
+fun RememberUpdatedState() {
+    var count = rememberSaveable { mutableStateOf(0) }
+
+    LaunchedEffect(key1 = Unit){
+        delay(2000)
+        count.value = 10
+    }
+    
+    counter(count.value)
+    
+
+}
+
+@Composable
+fun counter(value: Int) {
+
+    val state = rememberUpdatedState(newValue = value)
+
+    LaunchedEffect(key1 = Unit){
+        delay(5000)
+        Log.e("TAG", "Value ${state.value}" )
+    }
+
+    Text(text = value.toString())
+    
+}
 
 /*TODO
 *  Here is the example of Side effect,
